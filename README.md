@@ -2,6 +2,9 @@
 Built a quiz system using Singleton, Strategy, and Decorator patterns. Allowed users to select difficulty, track scores, and receive feedback. Designed modular architecture with reusable components.
 import time
 
+import time
+import random
+
 # Singleton Pattern for Quiz Manager 
 class QuizManager:
     _instance = None
@@ -59,6 +62,7 @@ class Quiz:
     def start(self, strategy):
         print(f"\nStarting Quiz: {self.title}")
         correct_answers = 0
+        random.shuffle(self.questions)
         for question in self.questions:
             question.display()
             answer = input("Your answer: ")
@@ -66,6 +70,7 @@ class Quiz:
                 correct_answers += 1
             total_questions = len(self.questions)
             score = strategy.calculate_score(correct_answers, total_questions)
+            print(f"Your score is : {score}")
     
 
 # Decorator Pattern for enhancing quiz
@@ -92,16 +97,23 @@ if __name__ == "__main__":
     quiz1.add_question(Question("What is the capital of China?", "Beijing"))
 
     quiz2 = Quiz("Math Quiz")
-    quiz2.add_question(Question("What is 5 +7", "12"))
+    quiz2.add_question(Question("What is 5 + 7", "12"))
     quiz2.add_question(Question("What is 9 * 3", "27"))
+
+    quiz3 = Quiz("Computer Quiz")
+    quiz3.add_question(Question("Collection of 8 bits is", "Byte"))
+    quiz3.add_question(Question("Who is the founder of Facebook", "Mark Zuckerberg"))
+    quiz3.add_question(Question("What does CPU stand for", "Central Processing Unit"))
 
     # Decorate quizzes
     decorated_quiz1 = TimerQuizDecorator(quiz1)
     decorated_quiz2 = TimerQuizDecorator(quiz2)
+    decorated_quiz3 = TimerQuizDecorator(quiz3)
 
     # Add quizzes
     quiz_manager.add_quiz(decorated_quiz1)
     quiz_manager.add_quiz(decorated_quiz2)
+    quiz_manager.add_quiz(decorated_quiz3)
 
     # Choose Scoring Strategy
     difficulty = input("Choose difficulty (easy/hard): ").lower()
